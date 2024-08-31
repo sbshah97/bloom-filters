@@ -1,15 +1,15 @@
 # Bloom Filters
 
-# Bloom Filters in Go
-
 This project implements a Bloom Filter data structure in Go. A Bloom Filter is a space-efficient probabilistic data structure used to test whether an element is a member of a set.
 
 ## Project Structure
 
-The project consists of two main files:
+The project consists of the following main files:
 
-1. `main.go`: Contains the implementation of the Bloom Filter.
-2. `bloom_filter_test.go`: Contains unit tests for the Bloom Filter implementation.
+1. `bloom/filter.go`: Contains the implementation of the Bloom Filter.
+2. `bloom/optimal.go`: Contains functions for calculating optimal Bloom Filter parameters.
+3. `bloom/bloom_test.go`: Contains unit tests for the Bloom Filter implementation.
+4. `main.go`: Contains an example usage of the Bloom Filter.
 
 ## Setup Instructions
 
@@ -17,8 +17,8 @@ The project consists of two main files:
 
 2. Clone this repository:
    ```
-   git clone https://github.com/yourusername/bloom-filter-go.git
-   cd bloom-filter-go
+   git clone https://github.com/sbshah97/bloom-filters.git
+   cd bloom-filters
    ```
 
 3. Run the tests:
@@ -35,15 +35,15 @@ The project consists of two main files:
 
 For those new to Bloom Filters, this project is structured to guide you through the implementation process with progressive test cases. Follow these steps to understand and implement a Bloom Filter:
 
-1. **Basic Structure**: 
+- [x] **Basic Structure**: 
    - Implement the basic structure of a Bloom Filter (array of bits, hash functions).
    - Test: Create a Bloom Filter with a given size and number of hash functions.
 
-2. **Add Operation**: 
+- [x] **Add Operation**: 
    - Implement the method to add an element to the Bloom Filter.
    - Test: Add an element and verify that the corresponding bits are set.
 
-3. **Query Operation**: 
+- [x] **Query Operation**: 
    - Implement the method to check if an element might be in the set.
    - Test: Query for added elements (should return true) and non-added elements (should mostly return false).
 

@@ -7,11 +7,14 @@ import (
 	"github.com/sbshah97/bloom-filters/bloom"
 )
 
+const expectedElements = 1000
+const falsePositiveRate = 0.01
+
 func main() {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
-	size := bloom.OptimalSize(1000, 0.01)
-	numHashFuncs := bloom.OptimalHashFunctions(size, 1000)
+	size := bloom.OptimalSize(expectedElements, falsePositiveRate)
+	numHashFuncs := bloom.OptimalHashFunctions(size, expectedElements)
 
 	bf := bloom.NewBloomFilter(size, numHashFuncs, logger)
 

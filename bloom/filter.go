@@ -4,6 +4,7 @@ import (
 	"hash"
 	"hash/fnv"
 	"log/slog"
+	"math"
 )
 
 // BloomFilter represents a Bloom filter data structure
@@ -76,3 +77,16 @@ func (bf *BloomFilter) Contains(element []byte) bool {
 	bf.logger.Info("Element possibly in Bloom filter", "element", string(element))
 	return true
 }
+
+// FalsePositiveRate calculates the current false positive rate of the Bloom filter
+func (bf *BloomFilter) FalsePositiveRate() float64 {
+	setBits := 0
+	for _, bit := range bf.bitArray {
+		if bit {
+			setBits++
+		}
+	}
+	probability := float64(setBits) / float64(bf.size)
+	return math.Pow(probability, float64(len(bf.hashFuncs)))
+}
+
