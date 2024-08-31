@@ -1,8 +1,10 @@
 package bloom
 
 import (
+	"encoding/gob"
 	"hash"
 	"hash/fnv"
+	"io"
 	"log/slog"
 	"math"
 )
@@ -90,3 +92,37 @@ func (bf *BloomFilter) FalsePositiveRate() float64 {
 	return math.Pow(probability, float64(len(bf.hashFuncs)))
 }
 
+// Save serializes the Bloom filter to a writer
+func (bf *BloomFilter) Save(w io.Writer) error {
+	encoder := gob.NewEncoder(w)
+	return encoder.Encode(struct {
+		BitArray []bool
+		Size     uint
+		NumHash  uint
+	}{
+		BitArray: bf.bitArray,
+		Size:     bf.size,
+		NumHash:  uint(len(bf.hashFuncs)),
+	})
+}
+
+// Load deserializes the Bloom filter from a reader
+func (bf *BloomFilter) Load(r io.Reader, logger *slog.Logger) error {
+	decoder := gob.NewDecoder(r)
+	var data struct {
+		BitArray []bool
+		Size     uint
+		NumHash  uint
+	}
+	if err := decoder.Decode(&data); err != nil {
+		return err
+	}
+	bf.bitArray = data.BitArray
+	bf.size = data.Size
+	bf.hashFuncs = make([]hash.Hash64, data.NumHash)
+	for i := uint(0); i < data.NumHash; i++ {
+		bf.hashFuncs[i] = fnv.New64()
+	}
+	bf.logger = logger
+	return nil
+}
