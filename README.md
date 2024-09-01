@@ -1,15 +1,60 @@
-# Bloom Filters
+# Bloom Filters
 
-This project implements a Bloom Filter data structure in Go. A Bloom Filter is a space-efficient probabilistic data structure used to test whether an element is a member of a set.
+[![Go Report Card](https://goreportcard.com/badge/github.com/sbshah97/bloom-filters)](https://goreportcard.com/report/github.com/sbshah97/bloom-filters)
+[![GoDoc](https://godoc.org/github.com/sbshah97/bloom-filters?status.svg)](https://godoc.org/github.com/sbshah97/bloom-filters)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
+A Go implementation of Bloom Filters, a space-efficient probabilistic data structure used to test whether an element is a member of a set.
+
+## Features
+
+- Create Bloom filters with customizable size and number of hash functions
+- Add elements to the filter
+- Check for element membership
+- Calculate false positive rate
+- Save and load Bloom filters to/from files
+
+## Installation
+
+To use this Bloom Filter implementation in your Go project:
+
+```bash
+go get github.com/sbshah97/bloom-filters
+```
+
+```go
+package main
+import (
+    "fmt"
+    "log/slog"
+    "os"
+    "github.com/sbshah97/bloom-filters/bloom"
+)
+func main() {
+    logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+    bf := bloom.NewBloomFilter(1000, 3, logger)
+    bf.Add([]byte("hello"))
+    bf.Add([]byte("world"))
+    fmt.Println(bf.Contains([]byte("hello"))) // true
+    fmt.Println(bf.Contains([]byte("world"))) // true
+    fmt.Println(bf.Contains([]byte("golang"))) // false (probably)
+}
+```
+
+
+For more detailed usage examples, please refer to the `main.go` file in the project root.
 
 ## Project Structure
 
-The project consists of the following main files:
+- `bloom/filter.go`: Core implementation of the Bloom Filter
+- `bloom/optimal.go`: Functions for calculating optimal Bloom Filter parameters
+- `bloom/file_operations.go`: Functions for saving and loading Bloom Filters
+- `bloom/*_test.go`: Unit tests for the Bloom Filter implementation
+- `main.go`: Example usage of the Bloom Filter
 
-1. `bloom/filter.go`: Contains the implementation of the Bloom Filter.
-2. `bloom/optimal.go`: Contains functions for calculating optimal Bloom Filter parameters.
-3. `bloom/bloom_test.go`: Contains unit tests for the Bloom Filter implementation.
-4. `main.go`: Contains an example usage of the Bloom Filter.
+## Running Tests
+
+To run the tests for this project:
 
 ## Setup Instructions
 
@@ -62,3 +107,28 @@ For those new to Bloom Filters, this project is structured to guide you through 
 Each step builds upon the previous one, allowing you to gradually understand and implement the Bloom Filter concept. The accompanying test file (`bloom_filter_test.go`) will contain test cases for each step, helping you verify your implementation as you progress.
 
 By following this guide and running the tests at each step, you'll gain a comprehensive understanding of how Bloom Filters work and how to implement them efficiently in Go.
+
+
+## Contributing
+
+Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to this project.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## TODO
+
+- Fix failing tests in `file_operation_test.go`
+- Update mock usage in tests to match new function signatures
+- Improve error handling and logging
+- Add more comprehensive examples and documentation
+
+## Acknowledgments
+
+- [Bloom Filter concept](https://en.wikipedia.org/wiki/Bloom_filter)
+- Go community for providing excellent tools and libraries
+
+## Contact
+
+For any questions or concerns, please open an issue on the GitHub repository.
