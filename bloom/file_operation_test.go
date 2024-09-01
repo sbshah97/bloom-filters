@@ -10,7 +10,7 @@ import (
 
 func TestSaveFilterToFile(t *testing.T) {
 	defer cleanup(t)
-	bf := &BloomFilter{
+	bf := &Filter{
 		bitArray:  []bool{true, false, true},
 		size:      3,
 		hashFuncs: make([]hash.Hash64, 2),
@@ -36,7 +36,9 @@ func TestSaveFilterToFile(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			err := SaveFilterToFile(bf, tt.filename)
+			logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+
+			err := SaveFilterToFile(bf, tt.filename, logger)
 
 			if (err != nil && tt.expectedError == nil) || (err == nil && tt.expectedError != nil) || (err != nil && tt.expectedError != nil && !errors.Is(err, tt.expectedError)) {
 				t.Errorf("SaveFilterToFile() error = %v, expectedError %v", err, tt.expectedError)
@@ -44,7 +46,9 @@ func TestSaveFilterToFile(t *testing.T) {
 
 			// Clean up the file if it was created
 			if tt.expectedError == nil {
-				os.Remove(tt.filename)
+				if err := os.Remove(tt.filename); err != nil {
+					t.Errorf("Failed to remove file %s: %v", tt.filename, err)
+				}
 			}
 		})
 	}
@@ -55,18 +59,22 @@ func TestLoadFilterFromFile(t *testing.T) {
 	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
 	// Create a valid Bloom filter file for testing
-	validFilter := &BloomFilter{
+	validFilter := &Filter{
 		bitArray:  []bool{true, false, true},
 		size:      3,
 		hashFuncs: make([]hash.Hash64, 2),
 		logger:    logger,
 	}
 	validFilename := "valid_test.gob"
-	err := SaveFilterToFile(validFilter, validFilename)
+	err := SaveFilterToFile(validFilter, validFilename, logger)
 	if err != nil {
 		t.Fatalf("Failed to create test file: %v", err)
 	}
-	defer os.Remove(validFilename)
+	defer func() {
+		if err := os.Remove(validFilename); err != nil {
+			t.Errorf("Failed to remove file %s: %v", validFilename, err)
+		}
+	}()
 
 	tests := []struct {
 		name          string

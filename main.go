@@ -1,3 +1,4 @@
+// Package main implements a Bloom filter example application.
 package main
 
 import (
@@ -32,7 +33,7 @@ func main() {
 	cleanup()
 }
 
-func createAndPopulateFilter() *bloom.BloomFilter {
+func createAndPopulateFilter() *bloom.Filter {
 	size := bloom.OptimalSize(expectedElements, falsePositiveRate)
 	numHashFuncs := bloom.OptimalHashFunctions(size, expectedElements)
 	bf := bloom.NewBloomFilter(size, numHashFuncs, logger)
@@ -42,15 +43,15 @@ func createAndPopulateFilter() *bloom.BloomFilter {
 	return bf
 }
 
-func checkFilter(bf *bloom.BloomFilter) {
+func checkFilter(bf *bloom.Filter) {
 	logger.Info("Checking Bloom filter",
 		"contains_hello", bf.Contains([]byte("hello")),
 		"contains_world", bf.Contains([]byte("world")),
 		"contains_golang", bf.Contains([]byte("golang")))
 }
 
-func saveAndLoadFilter(bf *bloom.BloomFilter) error {
-	if err := bloom.SaveFilterToFile(bf, bloomFilterFile); err != nil {
+func saveAndLoadFilter(bf *bloom.Filter) error {
+	if err := bloom.SaveFilterToFile(bf, bloomFilterFile, logger); err != nil {
 		return err
 	}
 	logger.Info("Bloom filter saved to file")
