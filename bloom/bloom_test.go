@@ -1,3 +1,4 @@
+// Package bloom provides implementation and tests for Bloom filter functionality.
 package bloom
 
 import (
@@ -291,7 +292,7 @@ func TestSaveAndLoad(t *testing.T) {
 			}
 
 			// Load the filter
-			loadedBF := &BloomFilter{}
+			loadedBF := &Filter{}
 			err = loadedBF.Load(&buf, logger)
 			if err != nil {
 				t.Fatalf("Failed to load Bloom filter: %v", err)

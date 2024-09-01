@@ -9,8 +9,8 @@ import (
 	"math"
 )
 
-// BloomFilter represents a Bloom filter data structure
-type BloomFilter struct {
+// Filter represents a Bloom filter data structure
+type Filter struct {
 	bitArray  []bool
 	size      uint
 	hashFuncs []hash.Hash64
@@ -18,8 +18,8 @@ type BloomFilter struct {
 }
 
 // NewBloomFilter creates a new Bloom filter with the given size and number of hash functions
-func NewBloomFilter(size uint, numHashFuncs uint, logger *slog.Logger) *BloomFilter {
-	bf := &BloomFilter{
+func NewBloomFilter(size uint, numHashFuncs uint, logger *slog.Logger) *Filter {
+	bf := &Filter{
 		bitArray:  make([]bool, size),
 		size:      size,
 		hashFuncs: make([]hash.Hash64, numHashFuncs),
@@ -35,7 +35,7 @@ func NewBloomFilter(size uint, numHashFuncs uint, logger *slog.Logger) *BloomFil
 }
 
 // Add adds an element to the Bloom filter
-func (bf *BloomFilter) Add(element []byte) {
+func (bf *Filter) Add(element []byte) {
 	// This loop iterates through all hash functions in the Bloom filter
 	for i, h := range bf.hashFuncs {
 		// Reset the hash function to clear any previous data
@@ -66,7 +66,7 @@ func (bf *BloomFilter) Add(element []byte) {
 }
 
 // Contains checks if an element might be in the Bloom filter
-func (bf *BloomFilter) Contains(element []byte) bool {
+func (bf *Filter) Contains(element []byte) bool {
 	for i, h := range bf.hashFuncs {
 		h.Reset()
 		h.Write(element)
@@ -81,7 +81,7 @@ func (bf *BloomFilter) Contains(element []byte) bool {
 }
 
 // FalsePositiveRate calculates the current false positive rate of the Bloom filter
-func (bf *BloomFilter) FalsePositiveRate() float64 {
+func (bf *Filter) FalsePositiveRate() float64 {
 	setBits := 0
 	for _, bit := range bf.bitArray {
 		if bit {
@@ -93,7 +93,7 @@ func (bf *BloomFilter) FalsePositiveRate() float64 {
 }
 
 // Save serializes the Bloom filter to a writer
-func (bf *BloomFilter) Save(w io.Writer) error {
+func (bf *Filter) Save(w io.Writer) error {
 	encoder := gob.NewEncoder(w)
 	return encoder.Encode(struct {
 		BitArray []bool
@@ -107,7 +107,7 @@ func (bf *BloomFilter) Save(w io.Writer) error {
 }
 
 // Load deserializes the Bloom filter from a reader
-func (bf *BloomFilter) Load(r io.Reader, logger *slog.Logger) error {
+func (bf *Filter) Load(r io.Reader, logger *slog.Logger) error {
 	decoder := gob.NewDecoder(r)
 	var data struct {
 		BitArray []bool

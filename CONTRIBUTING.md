@@ -36,3 +36,6 @@ We welcome contributions to the Bloom Filters project! This document provides gu
 - Provide as much context as possible when reporting bugs, including your Go version, operating system, and steps to reproduce the issue.
 
 Thank you for contributing to Bloom Filters!
+
+- Aim for high test coverage for new code.
+- The CI pipeline will automatically run on your pull request, checking for build errors, running tests, and performing linting. Ensure all checks pass before requesting a review.
