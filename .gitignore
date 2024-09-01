@@ -1,0 +1,18 @@
+# Ignore all .gob files
+*.gob
+
+# Ignore binary files
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Ignore test binary, built with `go test -c`
+*.test
+
+# Ignore output of the go coverage tool
+*.out
+
+# Ignore Go workspace file
+go.work
